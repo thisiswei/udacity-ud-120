@@ -12,6 +12,7 @@
 
 import sys
 from time import time
+from datetime import datetime
 sys.path.append("../tools/")
 from email_preprocess import preprocess
 
@@ -32,11 +33,19 @@ from sklearn.metrics import accuracy_score
 
 gb = GaussianNB()
 
-gb.fit(features_train, labels_train)
+def timeit(func):
+    t0 = datetime.now()
+    res = func()
+    t1 = datetime.now()
+    return res, (t1 - t0).total_seconds()
 
-predicted = gb.predict(features_test)
+
+_, time_used1 = timeit(lambda: gb.fit(features_train, labels_train))
+
+predicted, time_used2 = timeit(lambda: gb.predict(features_test))
 
 print accuracy_score(labels_test, predicted)
+print time_used1, time_used2
 
 
 #########################################################
