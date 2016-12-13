@@ -8,7 +8,7 @@ numpy.random.seed(42)
 ### The words (features) and authors (labels), already largely processed.
 ### These files should have been created from the previous (Lesson 10)
 ### mini-project.
-words_file = "../text_learning/your_word_data.pkl" 
+words_file = "../text_learning/your_word_data.pkl"
 authors_file = "../text_learning/your_email_authors.pkl"
 word_data = pickle.load( open(words_file, "r"))
 authors = pickle.load( open(authors_file, "r") )
@@ -27,6 +27,8 @@ vectorizer = TfidfVectorizer(sublinear_tf=True, max_df=0.5,
                              stop_words='english')
 features_train = vectorizer.fit_transform(features_train)
 features_test  = vectorizer.transform(features_test).toarray()
+get_name = vectorizer.get_feature_names()
+
 
 
 ### a classic way to overfit is to use a small number
@@ -37,7 +39,23 @@ labels_train   = labels_train[:150]
 
 
 
-### your code goes here
+### your code
 
+from sklearn.tree import DecisionTreeClassifier
 
+dt = DecisionTreeClassifier()
+dt.fit(features_train, labels_train)
+pred = dt.predict(features_test)
 
+from sklearn.metrics import accuracy_score
+
+accuracy = accuracy_score(labels_test, pred)
+
+importances = dt.feature_importances_
+max_ = max(importances)
+print max_
+idx = list(importances).index(max_)
+print get_name[idx]
+
+# print len(filter(lambda x: x == max_, dt.feature_importances_))
+print accuracy
